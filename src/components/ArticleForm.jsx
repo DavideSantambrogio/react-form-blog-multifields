@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import ArticleList from './ArticleList';
 
@@ -16,15 +16,14 @@ const categoryOptions = ['Categoria 1', 'Categoria 2', 'Categoria 3'];
 
 function ArticleForm() {
     const [articles, setArticles] = useState([]);
-    const [articleData, setArticleData,] = useState(defaultArticleData);
-    const [setFileInput, fileInput] = useState(defaultArticleData);
-
+    const [articleData, setArticleData] = useState(defaultArticleData);
+    const [fileInput, setFileInput] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setArticles([...articles, articleData]);
         setArticleData(defaultArticleData);
-        setFileInput(defaultArticleData)
+        setFileInput('');
     };
 
     const removeArticle = (indexToDelete) => {
@@ -33,6 +32,7 @@ function ArticleForm() {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+
         if (type === 'checkbox') {
             if (name === 'published') {
                 setArticleData({
@@ -48,11 +48,13 @@ function ArticleForm() {
                     },
                 });
             }
-        } else if (type === 'file') {
+        } else if (type === 'file') {           
+            const file = e.target.files[0];
             setArticleData({
                 ...articleData,
-                [name]: URL.createObjectURL(e.target.files[0]),
+                [name]: URL.createObjectURL(file), 
             });
+            setFileInput(file.name);
         } else {
             setArticleData({
                 ...articleData,
@@ -86,9 +88,8 @@ function ArticleForm() {
                         id="image"
                         name="image"
                         type="file"
-                        value={fileInput}
                         onChange={handleChange}
-                    />
+                    />                    
                 </FormGroup>
 
                 {/* Descrizione */}
@@ -105,7 +106,7 @@ function ArticleForm() {
                     />
                 </FormGroup>
 
-                {/* catehoria */}
+                {/* Categoria */}
                 <FormGroup>
                     <Label for="category">Categoria</Label>
                     <Input
